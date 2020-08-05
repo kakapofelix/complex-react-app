@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from "react"
 import Page from "./Page"
-import axios from "axios"
+import Axios from "axios"
+import { withRouter } from "react-router-dom"
 
-function CreatePost() {
+function CreatePost(props) {
   const [title, setTitle] = useState()
   const [body, setBody] = useState()
 
   async function handleSubmit(e) {
     e.preventDefault()
     try {
-      await axios.post("/create-post", { title, body, token: localStorage.getItem("complexappToken") })
-      console.log("new post was created")
+      const response = await Axios.post("/create-post", { title, body, token: localStorage.getItem("complexappToken") })
+      // Redirect to new post url
+      props.addFlashMessage("Congrats, you successfuly created a post.")
+      props.history.push(`/post/${response.data}`)
+      console.log("New post was created.")
     } catch (e) {
-      console.log("there was a problem")
+      console.log("There was a problem.")
     }
   }
 
@@ -39,4 +43,4 @@ function CreatePost() {
   )
 }
 
-export default CreatePost
+export default withRouter(CreatePost)
